@@ -2068,19 +2068,24 @@ function! s:Blame(bang,line1,line2,count,args) abort
         endif
         execute "vertical resize ".(s:linechars('.\{-\}\ze\s\+\d\+)')+1)
         nnoremap <buffer> <silent> <F1> :help fugitive-:Gblame<CR>
-        nnoremap <buffer> <silent> g?   :help fugitive-:Gblame<CR>
+        " Originally: g?
+        nnoremap <buffer> <silent> d?   :help fugitive-:Gblame<CR>
         nnoremap <buffer> <silent> q    :exe substitute(bufwinnr(b:fugitive_blamed_bufnr).' wincmd w<Bar>'.bufnr('').'bdelete','^-1','','')<CR>
         nnoremap <buffer> <silent> gq   :exe substitute(bufwinnr(b:fugitive_blamed_bufnr).' wincmd w<Bar>'.bufnr('').'bdelete<Bar>if expand("%:p") =~# "^fugitive:[\\/][\\/]"<Bar>Gedit<Bar>endif','^-1','','')<CR>
         nnoremap <buffer> <silent> <CR> :<C-U>exe <SID>BlameCommit("exe 'norm q'<Bar>edit")<CR>
         nnoremap <buffer> <silent> -    :<C-U>exe <SID>BlameJump('')<CR>
         nnoremap <buffer> <silent> P    :<C-U>exe <SID>BlameJump('^'.v:count1)<CR>
         nnoremap <buffer> <silent> ~    :<C-U>exe <SID>BlameJump('~'.v:count1)<CR>
-        nnoremap <buffer> <silent> i    :<C-U>exe <SID>BlameCommit("exe 'norm q'<Bar>edit")<CR>
-        nnoremap <buffer> <silent> o    :<C-U>exe <SID>BlameCommit((&splitbelow ? "botright" : "topleft")." split")<CR>
-        nnoremap <buffer> <silent> O    :<C-U>exe <SID>BlameCommit("tabedit")<CR>
+        " Originally: i
+        nnoremap <buffer> <silent> u    :<C-U>exe <SID>BlameCommit("exe 'norm q'<Bar>edit")<CR>
+        " Originally: o
+        nnoremap <buffer> <silent> y    :<C-U>exe <SID>BlameCommit((&splitbelow ? "botright" : "topleft")." split")<CR>
+        " Originally: O
+        nnoremap <buffer> <silent> Y    :<C-U>exe <SID>BlameCommit("tabedit")<CR>
         nnoremap <buffer> <silent> A    :<C-u>exe "vertical resize ".(<SID>linechars('.\{-\}\ze [0-9:/+-][0-9:/+ -]* \d\+)')+1+v:count)<CR>
         nnoremap <buffer> <silent> C    :<C-u>exe "vertical resize ".(<SID>linechars('^\S\+')+1+v:count)<CR>
-        nnoremap <buffer> <silent> D    :<C-u>exe "vertical resize ".(<SID>linechars('.\{-\}\ze\d\ze\s\+\d\+)')+1-v:count)<CR>
+        " Orginally: D
+        nnoremap <buffer> <silent> S    :<C-u>exe "vertical resize ".(<SID>linechars('.\{-\}\ze\d\ze\s\+\d\+)')+1-v:count)<CR>
         redraw
         syncbind
       endif
@@ -2567,33 +2572,50 @@ function! s:BufReadIndex() abort
     call s:JumpInit()
     nunmap   <buffer>          P
     nunmap   <buffer>          ~
-    nnoremap <buffer> <silent> <C-N> :<C-U>execute <SID>StageNext(v:count1)<CR>
-    nnoremap <buffer> <silent> <C-P> :<C-U>execute <SID>StagePrevious(v:count1)<CR>
+    " Originally: <C-N>
+    nnoremap <buffer> <silent> <C-K> :<C-U>execute <SID>StageNext(v:count1)<CR>
+    " Originally: <C-P>
+    nnoremap <buffer> <silent> <C-;> :<C-U>execute <SID>StagePrevious(v:count1)<CR>
     nnoremap <buffer> <silent> - :<C-U>silent execute <SID>StageToggle(line('.'),line('.')+v:count1-1)<CR>
     xnoremap <buffer> <silent> - :<C-U>silent execute <SID>StageToggle(line("'<"),line("'>"))<CR>
     nnoremap <buffer> <silent> a :<C-U>let b:fugitive_display_format += 1<Bar>exe <SID>BufReadIndex()<CR>
-    nnoremap <buffer> <silent> i :<C-U>let b:fugitive_display_format -= 1<Bar>exe <SID>BufReadIndex()<CR>
+    " Originally: i
+    nnoremap <buffer> <silent> u :<C-U>let b:fugitive_display_format -= 1<Bar>exe <SID>BufReadIndex()<CR>
     nnoremap <buffer> <silent> C :<C-U>Gcommit<CR>
     nnoremap <buffer> <silent> cA :<C-U>Gcommit --amend --reuse-message=HEAD<CR>
     nnoremap <buffer> <silent> ca :<C-U>Gcommit --amend<CR>
     nnoremap <buffer> <silent> cc :<C-U>Gcommit<CR>
     nnoremap <buffer> <silent> cva :<C-U>Gcommit --amend --verbose<CR>
     nnoremap <buffer> <silent> cvc :<C-U>Gcommit --verbose<CR>
-    nnoremap <buffer> <silent> D :<C-U>execute <SID>StageDiff('Gdiff')<CR>
-    nnoremap <buffer> <silent> dd :<C-U>execute <SID>StageDiff('Gdiff')<CR>
-    nnoremap <buffer> <silent> dh :<C-U>execute <SID>StageDiff('Gsdiff')<CR>
-    nnoremap <buffer> <silent> ds :<C-U>execute <SID>StageDiff('Gsdiff')<CR>
-    nnoremap <buffer> <silent> dp :<C-U>execute <SID>StageDiffEdit()<CR>
-    nnoremap <buffer> <silent> dv :<C-U>execute <SID>StageDiff('Gvdiff')<CR>
-    nnoremap <buffer> <silent> p :<C-U>execute <SID>StagePatch(line('.'),line('.')+v:count1-1)<CR>
-    xnoremap <buffer> <silent> p :<C-U>execute <SID>StagePatch(line("'<"),line("'>"))<CR>
-    nnoremap <buffer> <silent> P :<C-U>execute <SID>StagePatch(line('.'),line('.')+v:count1-1)<CR>
-    xnoremap <buffer> <silent> P :<C-U>execute <SID>StagePatch(line("'<"),line("'>"))<CR>
+    " Originally: D
+    nnoremap <buffer> <silent> S :<C-U>execute <SID>StageDiff('Gdiff')<CR>
+    " Originally: dd
+    nnoremap <buffer> <silent> ss :<C-U>execute <SID>StageDiff('Gdiff')<CR>
+    " Originally: dh
+    nnoremap <buffer> <silent> sh :<C-U>execute <SID>StageDiff('Gsdiff')<CR>
+    " Originally: ds
+    nnoremap <buffer> <silent> sr :<C-U>execute <SID>StageDiff('Gsdiff')<CR>
+    " Originally: dp
+    nnoremap <buffer> <silent> s; :<C-U>execute <SID>StageDiffEdit()<CR>
+    " Originally: dv
+    nnoremap <buffer> <silent> sv :<C-U>execute <SID>StageDiff('Gvdiff')<CR>
+    " Originally: p
+    nnoremap <buffer> <silent> ; :<C-U>execute <SID>StagePatch(line('.'),line('.')+v:count1-1)<CR>
+    " Originally: p
+    xnoremap <buffer> <silent> ; :<C-U>execute <SID>StagePatch(line("'<"),line("'>"))<CR>
+    " Originally: P
+    nnoremap <buffer> <silent> : :<C-U>execute <SID>StagePatch(line('.'),line('.')+v:count1-1)<CR>
+    " Originally: P
+    xnoremap <buffer> <silent> : :<C-U>execute <SID>StagePatch(line("'<"),line("'>"))<CR>
     nnoremap <buffer> <silent> q :<C-U>if bufnr('$') == 1<Bar>quit<Bar>else<Bar>bdelete<Bar>endif<CR>
-    nnoremap <buffer> <silent> r :<C-U>edit<CR>
-    nnoremap <buffer> <silent> R :<C-U>edit<CR>
-    nnoremap <buffer> <silent> U :<C-U>execute <SID>StageUndo()<CR>
-    nnoremap <buffer> <silent> g?   :help fugitive-:Gstatus<CR>
+    " Originally: r
+    nnoremap <buffer> <silent> p :<C-U>edit<CR>
+    " Originally: R
+    nnoremap <buffer> <silent> P :<C-U>edit<CR>
+    " Originally: U
+    nnoremap <buffer> <silent> L :<C-U>execute <SID>StageUndo()<CR>
+    " Originally: g?
+    nnoremap <buffer> <silent> d?   :help fugitive-:Gstatus<CR>
     nnoremap <buffer> <silent> <F1> :help fugitive-:Gstatus<CR>
   catch /^fugitive:/
     return 'echoerr v:errmsg'
@@ -2812,9 +2834,11 @@ endfunction
 function! s:JumpInit(...) abort
   nnoremap <buffer> <silent> <CR>    :<C-U>exe <SID>GF("edit")<CR>
   if !&modifiable
-    nnoremap <buffer> <silent> o     :<C-U>exe <SID>GF("split")<CR>
+    " Originally: o
+    nnoremap <buffer> <silent> ;     :<C-U>exe <SID>GF("split")<CR>
     nnoremap <buffer> <silent> S     :<C-U>exe <SID>GF("vsplit")<CR>
-    nnoremap <buffer> <silent> O     :<C-U>exe <SID>GF("tabedit")<CR>
+    " Originally: O
+    nnoremap <buffer> <silent> :     :<C-U>exe <SID>GF("tabedit")<CR>
     nnoremap <buffer> <silent> -     :<C-U>exe <SID>Edit('edit',0,<SID>buffer().up(v:count1))<Bar> if fugitive#buffer().type('tree')<Bar>call search('^'.escape(expand('#:t'),'.*[]~\').'/\=$','wc')<Bar>endif<CR>
     nnoremap <buffer> <silent> P     :<C-U>exe <SID>Edit('edit',0,<SID>buffer().commit().'^'.v:count1.<SID>buffer().path(':'))<CR>
     nnoremap <buffer> <silent> ~     :<C-U>exe <SID>Edit('edit',0,<SID>buffer().commit().'~'.v:count1.<SID>buffer().path(':'))<CR>
